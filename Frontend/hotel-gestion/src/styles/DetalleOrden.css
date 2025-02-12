@@ -1,0 +1,111 @@
+.detalle-orden-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  min-height: 100vh; 
+  width: 100%;
+  border-radius: px;
+  padding: 1rem; 
+  overflow-y: auto;
+}
+
+.detalle-orden-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  width: auto;
+  padding: 1rem; 
+  overflow-y: auto;
+  min-height: 31vh; 
+  background-color: white; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.detalle-orden-header {
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 1rem;
+  background-color: #007bb5; 
+  color: white; 
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.detalle-orden-back {
+  margin-bottom: 1rem;
+  margin-top: 0.8rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #007bb5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.detalle-orden-back:hover {
+  background-color: #005f8f;
+}
+
+.detalle-orden-description {
+  margin: 1rem auto;
+  max-width: 800px;
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.detalle-orden-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px; 
+  padding-bottom: 3rem;
+  border-radius: 10px;
+}
+
+
+.detalle-orden-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.detalle-orden-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+
+.consumicion-add-card {
+  border: 2px dashed #007bb5;
+    background-color: #f0f8ff;
+    cursor: pointer;
+    justify-content: center;
+
+}
+
+.consumicion-add-text {
+  font-size: 1.1rem;
+  color: #007bb5;
+  font-weight: bold;
+}
+
+.add-consumicion:hover {
+  background-color: #d4e9f9;
+}
