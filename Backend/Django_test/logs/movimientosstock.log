@@ -1,0 +1,346 @@
+2025-01-27 22:08:50,972 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 999.000 L.
+2025-01-27 22:08:50,974 INFO Descontado 1.000 L de 'Ron'. Stock restante: 999.000 L.
+2025-01-27 22:08:50,975 INFO Orden creada exitosamente: ID 45 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 9.00€
+2025-01-27 22:10:09,114 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-27 22:10:09,115 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-27 22:10:15,260 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-27 22:10:15,261 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-27 22:10:30,246 INFO Descontado 5.000 L de 'Ron'. Stock restante: 994.000 L.
+2025-01-27 22:10:30,250 INFO Descontado 5.000 L de 'Coca Cola'. Stock restante: 994.000 L.
+2025-01-27 22:10:30,257 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 993.000 L.
+2025-01-27 22:10:30,261 INFO Descontado 1.000 L de 'Ron'. Stock restante: 993.000 L.
+2025-01-27 22:10:30,262 INFO Orden creada exitosamente: ID 48 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 44.00€
+2025-01-27 22:11:13,931 INFO Descontado 10.000 L de 'Coca Cola'. Stock restante: 983.000 L.
+2025-01-27 22:11:13,933 INFO Descontado 10.000 L de 'Ron'. Stock restante: 983.000 L.
+2025-01-27 22:11:13,936 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 982.000 L.
+2025-01-27 22:11:13,938 INFO Descontado 1.000 L de 'Ron'. Stock restante: 982.000 L.
+2025-01-27 22:11:13,939 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-27 22:11:13,939 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-27 22:12:01,207 INFO Descontado 10.000 L de 'Coca Cola'. Stock restante: 983.000 L.
+2025-01-27 22:12:01,211 INFO Descontado 10.000 L de 'Ron'. Stock restante: 983.000 L.
+2025-01-27 22:12:01,213 INFO Descontado 10.000 L de 'Coca Cola'. Stock restante: 973.000 L.
+2025-01-27 22:12:01,216 INFO Descontado 10.000 L de 'Ron'. Stock restante: 973.000 L.
+2025-01-27 22:12:01,217 INFO Orden creada exitosamente: ID 50 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 160.00€
+2025-01-27 22:13:06,354 INFO Descontado 5.000 L de 'Coca Cola'. Stock restante: 5.000 L.
+2025-01-27 22:13:06,358 INFO Descontado 10.000 L de 'Ron'. Stock restante: 963.000 L.
+2025-01-27 22:13:06,362 ERROR Stock insuficiente para 'Coca Cola'. Requerido: 6.000 L, Disponible: 5.000 L.
+2025-01-27 22:13:06,362 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Coca Cola'. Requerido: 6.000 L, Disponible: 5.000 L."]
+2025-01-27 22:13:20,921 INFO Descontado 10.000 L de 'Ron'. Stock restante: 963.000 L.
+2025-01-27 22:13:20,927 INFO Descontado 6.000 L de 'Coca Cola'. Stock restante: 4.000 L.
+2025-01-27 22:13:20,931 INFO Descontado 6.000 L de 'Ron'. Stock restante: 957.000 L.
+2025-01-27 22:13:20,932 INFO Orden creada exitosamente: ID 52 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 114.00€
+2025-01-27 23:10:47,129 ERROR Error inesperado al eliminar elemento de la orden.
+Traceback (most recent call last):
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.RaiseException: Tipo de movimiento no válido: Reabastecimiento (eliminación orden)
+CONTEXT:  PL/pgSQL function actualizar_stock_ingredientes() line 36 at RAISE
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\gestion\views.py", line 422, in delete
+    MovimientosStock.objects.create(
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.InternalError: Tipo de movimiento no válido: Reabastecimiento (eliminación orden)
+CONTEXT:  PL/pgSQL function actualizar_stock_ingredientes() line 36 at RAISE
+
+2025-01-27 23:12:29,655 INFO Reabastecido 5.000 L de 'Ron'. Stock total: 962.000 L.
+2025-01-27 23:12:29,709 INFO Elemento eliminado: ID 68 de Orden 48.
+2025-01-27 23:12:45,899 ERROR Error inesperado al eliminar elemento de la orden.
+Traceback (most recent call last):
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.RaiseException: Tipo de movimiento no válido: Reabastecimiento (eliminación orden)
+CONTEXT:  PL/pgSQL function actualizar_stock_ingredientes() line 36 at RAISE
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\gestion\views.py", line 398, in delete
+    MovimientosStock.objects.create(
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.InternalError: Tipo de movimiento no válido: Reabastecimiento (eliminación orden)
+CONTEXT:  PL/pgSQL function actualizar_stock_ingredientes() line 36 at RAISE
+
+2025-01-27 23:13:44,814 INFO Reabastecido 1.000 L de 'Coca Cola'. Stock total: 5.000 L.
+2025-01-27 23:13:44,819 INFO Reabastecido 1.000 L de 'Ron'. Stock total: 963.000 L.
+2025-01-27 23:13:44,840 INFO Elemento eliminado: ID 70 de Orden 48.
+2025-01-27 23:13:59,092 INFO Reabastecido 5.000 L de 'Coca Cola'. Stock total: 10.000 L.
+2025-01-27 23:13:59,105 INFO Elemento eliminado: ID 69 de Orden 48.
+2025-01-27 23:14:22,635 INFO Reabastecido 10.000 L de 'Coca Cola'. Stock total: 20.000 L.
+2025-01-27 23:14:22,639 INFO Reabastecido 10.000 L de 'Ron'. Stock total: 973.000 L.
+2025-01-27 23:14:22,653 INFO Elemento eliminado: ID 75 de Orden 50.
+2025-01-27 23:14:32,909 INFO Reabastecido 10.000 L de 'Coca Cola'. Stock total: 30.000 L.
+2025-01-27 23:14:32,921 INFO Elemento eliminado: ID 76 de Orden 50.
+2025-01-27 23:14:41,031 INFO Reabastecido 10.000 L de 'Ron'. Stock total: 983.000 L.
+2025-01-27 23:14:41,042 INFO Elemento eliminado: ID 77 de Orden 50.
+2025-01-27 23:14:53,011 INFO Reabastecido 1.000 L de 'Coca Cola'. Stock total: 31.000 L.
+2025-01-27 23:14:53,017 INFO Reabastecido 1.000 L de 'Ron'. Stock total: 984.000 L.
+2025-01-27 23:14:53,031 INFO Elemento eliminado: ID 64 de Orden 45.
+2025-01-27 23:17:45,941 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-27 23:17:45,941 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-27 23:17:48,253 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-27 23:17:48,254 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-27 23:17:51,413 INFO Descontado 1.000 L de 'Ron'. Stock restante: 983.000 L.
+2025-01-27 23:17:51,413 INFO Orden creada exitosamente: ID 55 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-27 23:18:05,378 INFO Descontado 1.000 L de 'Ron'. Stock restante: 982.000 L.
+2025-01-27 23:18:05,379 INFO Orden creada exitosamente: ID 56 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-27 23:18:25,642 INFO Descontado 2.000 L de 'Ron'. Stock restante: 980.000 L.
+2025-01-27 23:18:25,643 INFO Orden creada exitosamente: ID 57 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 12.00€
+2025-01-27 23:59:21,164 INFO Descontado 1.000 L de 'Ron'. Stock restante: 979.000 L.
+2025-01-27 23:59:21,180 INFO Orden creada exitosamente: ID 58 para Asignación 1 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-28 00:00:00,428 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:04,174 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:09,095 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:13,380 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:18,434 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:30,511 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:48,729 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:00:58,831 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 00:00:58,831 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 00:01:25,957 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 30.000 L.
+2025-01-28 00:01:25,961 INFO Descontado 1.000 L de 'Ron'. Stock restante: 978.000 L.
+2025-01-28 00:01:25,966 INFO Descontado 1.000 L de 'Ron'. Stock restante: 977.000 L.
+2025-01-28 00:01:25,967 INFO Orden creada exitosamente: ID 60 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 15.00€
+2025-01-28 00:01:54,492 WARNING Datos inválidos al agregar elemento a la orden: {'non_field_errors': [ErrorDetail(string='Invalid data. Expected a dictionary, but got list.', code='invalid')]}
+2025-01-28 00:05:11,299 ERROR ValidationError al agregar elementos a la orden: ['This field is required.']
+2025-01-28 00:05:23,284 ERROR ValidationError al agregar elementos a la orden: ['This field is required.']
+2025-01-28 00:05:51,045 ERROR ValidationError al agregar elementos a la orden: ['This field is required.']
+2025-01-28 00:07:21,016 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 00:07:21,016 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 00:07:26,774 INFO Descontado 1.000 L de 'Ron'. Stock restante: 976.000 L.
+2025-01-28 00:07:26,774 INFO Orden creada exitosamente: ID 62 para Asignación 1 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-28 00:07:38,538 ERROR ValidationError al agregar elementos a la orden: ['This field is required.']
+2025-01-28 00:20:20,292 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 00:20:20,292 ERROR ValidationError al agregar elementos a la orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 00:20:25,357 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 00:20:25,357 ERROR ValidationError al agregar elementos a la orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 00:20:29,313 INFO Descontado 1.000 L de 'Ron'. Stock restante: 975.000 L.
+2025-01-28 00:20:29,313 ERROR Error inesperado al agregar elementos a la orden.
+Traceback (most recent call last):
+  File "C:\Users\Robert\OneDrive\Desktop\Django_test\gestion\views.py", line 387, in post
+    "nombre": elemento.nombre,
+              ^^^^^^^^^^^^^^^
+AttributeError: 'OrdenElementos' object has no attribute 'nombre'
+2025-01-28 00:28:22,700 INFO Descontado 1.000 L de 'Ron'. Stock restante: 975.000 L.
+2025-01-28 00:28:51,165 INFO Descontado 1.000 L de 'Ron'. Stock restante: 974.000 L.
+2025-01-28 00:29:10,716 INFO Descontado 2.000 L de 'Ron'. Stock restante: 972.000 L.
+2025-01-28 00:29:10,722 INFO Descontado 3.000 L de 'Coca Cola'. Stock restante: 27.000 L.
+2025-01-28 00:29:10,732 INFO Descontado 3.000 L de 'Ron'. Stock restante: 969.000 L.
+2025-01-28 00:29:10,732 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 26.000 L.
+2025-01-28 00:29:40,879 INFO Descontado 4.000 L de 'Ron'. Stock restante: 965.000 L.
+2025-01-28 00:29:40,904 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 25.000 L.
+2025-01-28 00:29:40,907 INFO Descontado 1.000 L de 'Ron'. Stock restante: 964.000 L.
+2025-01-28 00:29:40,914 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 24.000 L.
+2025-01-28 00:33:47,193 INFO Descontado 1.000 L de 'Ron'. Stock restante: 963.000 L.
+2025-01-28 00:34:48,321 INFO Descontado 1.000 L de 'Ron'. Stock restante: 962.000 L.
+2025-01-28 00:37:55,689 INFO Descontado 1.000 L de 'Ron'. Stock restante: 961.000 L.
+2025-01-28 00:38:15,266 INFO Descontado 1.000 L de 'Ron'. Stock restante: 960.000 L.
+2025-01-28 00:38:38,606 INFO Descontado 1.000 L de 'Ron'. Stock restante: 959.000 L.
+2025-01-28 01:11:42,330 INFO Descontado 1.000 L de 'Ron'. Stock restante: 958.000 L.
+2025-01-28 01:12:07,382 INFO Descontado 1.000 L de 'Ron'. Stock restante: 957.000 L.
+2025-01-28 01:12:07,382 INFO Orden creada exitosamente: ID 63 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-28 01:12:55,895 INFO Descontado 1.000 L de 'Ron'. Stock restante: 956.000 L.
+2025-01-28 01:13:09,120 INFO Descontado 5.000 L de 'Ron'. Stock restante: 951.000 L.
+2025-01-28 01:13:09,136 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 23.000 L.
+2025-01-28 01:13:19,947 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 01:13:19,947 ERROR ValidationError al agregar elementos a la orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 01:13:21,783 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 01:13:21,783 ERROR ValidationError al agregar elementos a la orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 01:13:51,872 INFO Descontado 7.000 L de 'Ron'. Stock restante: 944.000 L.
+2025-01-28 01:13:51,904 INFO Descontado 7.000 L de 'Coca Cola'. Stock restante: 16.000 L.
+2025-01-28 01:13:51,920 INFO Descontado 3.000 L de 'Coca Cola'. Stock restante: 13.000 L.
+2025-01-28 01:13:51,920 INFO Descontado 3.000 L de 'Ron'. Stock restante: 941.000 L.
+2025-01-28 01:14:12,864 INFO Descontado 1.000 L de 'Ron'. Stock restante: 940.000 L.
+2025-01-28 01:14:12,864 INFO Orden creada exitosamente: ID 64 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-28 01:14:25,271 INFO Descontado 1.000 L de 'Ron'. Stock restante: 939.000 L.
+2025-01-28 01:14:25,271 INFO Orden creada exitosamente: ID 65 para Asignación 1 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 6.00€
+2025-01-28 01:14:49,725 INFO Descontado 2.000 L de 'Ron'. Stock restante: 937.000 L.
+2025-01-28 01:14:49,725 INFO Descontado 2.000 L de 'Coca Cola'. Stock restante: 11.000 L.
+2025-01-28 01:14:49,741 INFO Descontado 2.000 L de 'Coca Cola'. Stock restante: 9.000 L.
+2025-01-28 01:14:49,741 INFO Descontado 2.000 L de 'Ron'. Stock restante: 935.000 L.
+2025-01-28 01:14:49,741 INFO Orden creada exitosamente: ID 66 para Asignación 2 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 32.00€
+2025-01-28 01:15:22,300 INFO Descontado 1.000 L de 'Ron'. Stock restante: 934.000 L.
+2025-01-28 01:15:22,322 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 8.000 L.
+2025-01-28 01:15:40,586 INFO Descontado 1.000 L de 'Ron'. Stock restante: 933.000 L.
+2025-01-28 01:15:40,586 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 7.000 L.
+2025-01-28 01:15:40,602 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 6.000 L.
+2025-01-28 01:15:40,602 INFO Descontado 1.000 L de 'Ron'. Stock restante: 932.000 L.
+2025-01-28 01:16:09,869 INFO Descontado 1.000 L de 'Ron'. Stock restante: 931.000 L.
+2025-01-28 01:16:09,885 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 5.000 L.
+2025-01-28 01:16:09,901 INFO Descontado 1.000 L de 'Coca Cola'. Stock restante: 4.000 L.
+2025-01-28 01:16:09,901 INFO Descontado 1.000 L de 'Ron'. Stock restante: 930.000 L.
+2025-01-28 01:19:11,487 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 01:19:11,487 ERROR ValidationError al agregar elementos a la orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 01:19:14,010 ERROR Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L.
+2025-01-28 01:19:14,010 ERROR ValidationError al agregar elementos a la orden: ["Stock insuficiente para 'Vodka'. Requerido: 1.000 L, Disponible: 0.000 L."]
+2025-01-28 01:19:16,862 INFO Descontado 1.000 L de 'Ron'. Stock restante: 929.000 L.
+2025-01-28 01:31:24,278 INFO Descontado 1.000 L de 'Ron'. Stock restante: 928.000 L.
+2025-01-28 01:31:24,282 INFO Descontado 2.000 L de 'Coca Cola'. Stock restante: 2.000 L.
+2025-01-28 01:31:24,283 INFO Orden creada exitosamente: ID 67 para Asignación 3 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 8.00€
+2025-01-28 01:31:47,335 INFO Reabastecido 2.000 L de 'Coca Cola'. Stock total: 4.000 L.
+2025-01-28 01:31:47,353 INFO Elemento eliminado: ID 138 de Orden 67.
+2025-01-28 01:31:49,967 INFO Reabastecido 1.000 L de 'Ron'. Stock total: 929.000 L.
+2025-01-28 01:31:49,982 INFO Elemento eliminado: ID 137 de Orden 67.
+2025-01-28 01:32:04,697 INFO Reabastecido 2.000 L de 'Coca Cola'. Stock total: 6.000 L.
+2025-01-28 01:32:04,709 INFO Elemento eliminado: ID 124 de Orden 66.
+2025-01-28 01:32:07,494 INFO Reabastecido 1.000 L de 'Ron'. Stock total: 930.000 L.
+2025-01-28 01:32:07,507 INFO Elemento eliminado: ID 136 de Orden 66.
+2025-01-28 01:32:08,656 INFO Reabastecido 2.000 L de 'Coca Cola'. Stock total: 8.000 L.
+2025-01-28 01:32:08,660 INFO Reabastecido 2.000 L de 'Ron'. Stock total: 932.000 L.
+2025-01-28 01:32:08,672 INFO Elemento eliminado: ID 125 de Orden 66.
+2025-01-28 01:32:09,738 INFO Reabastecido 2.000 L de 'Ron'. Stock total: 934.000 L.
+2025-01-28 01:32:09,750 INFO Elemento eliminado: ID 123 de Orden 66.
+2025-01-28 01:47:06,534 ERROR Stock insuficiente para 'Vodka'. Requerido: 3.000 L, Disponible: 2.000 L.
+2025-01-28 01:47:06,534 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Vodka'. Requerido: 3.000 L, Disponible: 2.000 L."]
+2025-01-28 01:47:16,595 INFO Descontado 2.000 L de 'Vodka'. Stock restante: 0.000 L.
+2025-01-28 01:47:16,595 INFO Descontado 2.000 L de 'Ron'. Stock restante: 932.000 L.
+2025-01-28 01:47:16,611 INFO Descontado 2.000 L de 'Coca Cola'. Stock restante: 6.000 L.
+2025-01-28 01:47:16,611 INFO Descontado 2.000 L de 'Coca Cola'. Stock restante: 4.000 L.
+2025-01-28 01:47:16,611 INFO Descontado 2.000 L de 'Ron'. Stock restante: 930.000 L.
+2025-01-28 01:47:16,611 INFO Orden creada exitosamente: ID 69 para Asignación 5 en Bar Pool Bar por Empleado Gonzalo J.. Precio Total: 44.00€
+2025-01-31 13:01:29,802 INFO Reabastecido 2.000 L de 'Ron'. Stock total: 932.000 L.
+2025-01-31 13:01:29,836 INFO Elemento eliminado: ID 141 de Orden 69.
+2025-01-31 13:01:57,609 INFO Reabastecido 2.000 L de 'Coca Cola'. Stock total: 4.000 L.
+2025-01-31 13:01:57,619 INFO Reabastecido 2.000 L de 'Ron'. Stock total: 934.000 L.
+2025-01-31 13:01:57,630 INFO Elemento eliminado: ID 143 de Orden 69.
+2025-02-01 14:46:44,104 INFO Reabastecido 2.000 L de 'Coca Cola'. Stock total: 6.000 L.
+2025-02-01 14:46:44,139 INFO Elemento eliminado: ID 142 de Orden 69.
+2025-02-01 15:06:21,118 INFO Reabastecido 2.000 L de 'Vodka'. Stock total: 102.000 L.
+2025-02-01 15:06:21,133 INFO Elemento eliminado: ID 140 de Orden 69.
+2025-02-01 15:39:12,744 ERROR Stock insuficiente para 'Tequila'. Requerido: 0.040 L, Disponible: 0.000 L.
+2025-02-01 15:39:12,749 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Tequila'. Requerido: 0.040 L, Disponible: 0.000 L."]
+2025-02-01 15:39:57,247 INFO Descontado 0.040 L de 'Tequila'. Stock restante: 49.960 L.
+2025-02-01 15:39:57,252 INFO Descontado 0.200 L de 'Zumo de lima'. Stock restante: 49.800 L.
+2025-02-01 15:39:57,256 INFO Descontado 0.200 L de 'Triple Seco'. Stock restante: 49.800 L.
+2025-02-03 21:38:41,490 INFO Descontado 0.040 L de 'Ron'. Stock restante: 2999.960 L.
+2025-02-03 21:38:41,494 INFO Descontado 0.010 L de 'Azúcar'. Stock restante: 2999.990 L.
+2025-02-03 21:38:41,498 INFO Descontado 0.005 L de 'Menta'. Stock restante: 2999.995 L.
+2025-02-03 21:38:41,503 INFO Descontado 0.200 L de 'Hielo'. Stock restante: 2999.800 L.
+2025-02-03 21:38:41,507 INFO Descontado 0.150 L de 'Soda'. Stock restante: 2999.850 L.
+2025-02-03 21:38:41,508 INFO Orden creada exitosamente: ID 5437 para Asignación 1221 en Bar Lobby Bar por Empleado Miguel. Precio Total: 12.50€
+2025-02-03 21:39:38,282 INFO Descontado 0.045 L de 'Ron'. Stock restante: 2999.915 L.
+2025-02-03 21:39:38,286 INFO Descontado 0.020 L de 'Jugo de Limón'. Stock restante: 2999.980 L.
+2025-02-03 21:39:38,290 INFO Descontado 0.015 L de 'Azúcar'. Stock restante: 2999.975 L.
+2025-02-03 21:39:38,294 INFO Descontado 0.300 L de 'Hielo'. Stock restante: 2999.500 L.
+2025-02-03 21:39:38,300 INFO Descontado 0.050 L de 'Cachaça'. Stock restante: 2999.950 L.
+2025-02-03 21:39:38,304 INFO Descontado 0.010 L de 'Azúcar'. Stock restante: 2999.965 L.
+2025-02-03 21:39:38,308 INFO Descontado 0.020 L de 'Jugo de Limón'. Stock restante: 2999.960 L.
+2025-02-03 21:39:38,312 INFO Descontado 0.045 L de 'Whisky'. Stock restante: 2999.955 L.
+2025-02-03 21:39:38,316 INFO Descontado 0.015 L de 'Vermouth'. Stock restante: 2999.985 L.
+2025-02-03 21:39:38,319 INFO Descontado 0.005 L de 'Amargo'. Stock restante: 2999.995 L.
+2025-02-03 21:39:38,323 INFO Descontado 0.040 L de 'Tequila'. Stock restante: 2999.960 L.
+2025-02-03 21:39:38,326 INFO Descontado 0.150 L de 'Jugo de Naranja'. Stock restante: 2999.850 L.
+2025-02-03 21:39:38,329 INFO Descontado 0.015 L de 'Granadina'. Stock restante: 2999.985 L.
+2025-02-03 21:39:38,329 INFO Orden creada exitosamente: ID 5438 para Asignación 1224 en Bar Lobby Bar por Empleado Miguel. Precio Total: 50.00€
+2025-02-03 21:40:07,774 INFO Descontado 0.400 L de 'Ron'. Stock restante: 2999.515 L.
+2025-02-03 21:40:07,778 INFO Descontado 0.100 L de 'Azúcar'. Stock restante: 2999.865 L.
+2025-02-03 21:40:07,781 INFO Descontado 0.050 L de 'Menta'. Stock restante: 2999.945 L.
+2025-02-03 21:40:07,784 INFO Descontado 2.000 L de 'Hielo'. Stock restante: 2997.500 L.
+2025-02-03 21:40:07,786 INFO Descontado 1.500 L de 'Soda'. Stock restante: 2998.350 L.
+2025-02-03 21:40:07,788 INFO Orden creada exitosamente: ID 5439 para Asignación 1221 en Bar Lobby Bar por Empleado Miguel. Precio Total: 125.00€
+2025-02-10 18:21:07,055 ERROR Stock insuficiente para 'Ron'. Requerido: 0.040 L, Disponible: 0.000 L.
+2025-02-10 18:21:07,056 ERROR ValidationError al crear orden: ["Stock insuficiente para 'Ron'. Requerido: 0.040 L, Disponible: 0.000 L."]
+2025-02-10 18:21:38,142 INFO Descontado 0.200 L de 'Ron'. Stock restante: 49.800 L.
+2025-02-10 18:21:38,145 INFO Descontado 1.500 L de 'Cocacola'. Stock restante: 48.500 L.
+2025-02-10 18:21:38,151 INFO Orden creada exitosamente: ID 2 para Asignación 1 en Bar Pool Bar por Empleado Esperanza Gracia. Precio Total: 37.50€
+2025-03-03 23:29:16,825 INFO Descontado 1.000 L de 'Tequila'. Stock restante: 19.000 L.
+2025-03-03 23:29:16,828 INFO Descontado 1.000 L de 'Soda'. Stock restante: 19.000 L.
+2025-03-03 23:29:16,832 INFO Descontado 1.000 L de 'Vodka'. Stock restante: 19.000 L.
+2025-03-03 23:29:16,837 INFO Descontado 1.000 L de 'Tequila'. Stock restante: 18.000 L.
+2025-03-03 23:29:16,839 INFO Descontado 1.000 L de 'Jugo de Limón'. Stock restante: 19.000 L.
+2025-03-03 23:29:16,844 INFO Descontado 1.000 L de 'Vodka'. Stock restante: 18.000 L.
+2025-03-03 23:29:16,847 INFO Descontado 1.000 L de 'Soda'. Stock restante: 18.000 L.
+2025-03-03 23:29:16,847 INFO Orden creada exitosamente: ID 1 para Asignación 2 en Bar Lobby Bar por Empleado Miguel. Precio Total: 41.00€
+2025-03-04 00:55:49,823 INFO Descontado 5.000 L de 'Ron'. Stock restante: 15.000 L.
+2025-03-04 00:55:49,826 INFO Descontado 5.000 L de 'Jugo de Limón'. Stock restante: 15.000 L.
+2025-03-04 00:55:49,829 INFO Descontado 5.000 L de 'Ron'. Stock restante: 10.000 L.
+2025-03-04 00:55:49,832 INFO Descontado 5.000 L de 'Vodka'. Stock restante: 15.000 L.
+2025-03-04 00:55:49,837 INFO Descontado 5.000 L de 'Tequila'. Stock restante: 15.000 L.
+2025-03-04 00:55:49,839 INFO Descontado 5.000 L de 'Jugo de Limón'. Stock restante: 10.000 L.
+2025-03-04 00:55:49,840 INFO Orden creada exitosamente: ID 1 para Asignación 1 en Bar Sky Lounge por Empleado Miguel. Precio Total: 192.50€

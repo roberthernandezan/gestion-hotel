@@ -165,19 +165,9 @@ function Reportes() {
               Reporte de Consumo Histórico
             </button>
             <br />
-            <button
-              className="reportes-button"
-              onClick={() => handleGenerateReport("stock-actual", "stock_actual")}
-            >
-              Reporte de Stock Actual
-            </button>
             <h2>Predicciones</h2>
             <button className="reportes-button" onClick={handleGeneratePredictions}>
-              Predicciones Anuales
-            </button>
-            <h2>Reabastecimiento</h2>
-            <button className="reportes-button" onClick={handleGenerateReabastecimientoReport}>
-              Reporte de Reabastecimiento
+              Predicciones y Reabastecimiento
             </button>
             <h2>Historial</h2>
             <button className="reportes-button" onClick={handleHistorialOrdenes}>

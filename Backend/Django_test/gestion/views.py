@@ -829,91 +829,117 @@ class CrearCocktailView(APIView):
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+from openpyxl.utils import get_column_letter
 
 class GenerarConsumosHistoricosView(View):
     def get(self, request):
         try:
-            fecha_fin = datetime.date.today()
+            # Fecha de corte: último día del mes completo anterior
+            fecha_actual = datetime.date.today()
+            fecha_fin = fecha_actual.replace(day=1) - datetime.timedelta(days=1)
 
-            fecha_inicio = (
-                OrdenElementos.objects.aggregate(primera_fecha=Min("fechaorden"))["primera_fecha"]
-            )
-
+            # Primer registro
+            fecha_inicio = OrdenElementos.objects.aggregate(
+                primera_fecha=Min("fechaorden")
+            )["primera_fecha"]
             if not fecha_inicio:
                 return JsonResponse({"error": "No hay registros en la base de datos."}, status=400)
 
+            # 1) Acumular consumo total por (ingrediente, año, mes)
             consumo_total = {}
 
-            datos_directos = (
+            # Consumo directo
+            directos = (
                 OrdenElementos.objects
-                .filter(escocktail=False, fechaorden__range=[fecha_inicio, fecha_fin])
-                .annotate(
-                    año=F('fechaorden__year'),
-                    mes=F('fechaorden__month'),
-                    ingrediente_nombre=F('id_ingredientes__nombre')
-                )
-                .values('ingrediente_nombre', 'año', 'mes')
-                .annotate(total_litros=Sum(F('cantidad') * F('id_ingredientes__litrosporunidad')))
+                    .filter(escocktail=False, fechaorden__range=[fecha_inicio, fecha_fin])
+                    .annotate(
+                        año=F("fechaorden__year"),
+                        mes=F("fechaorden__month"),
+                        ingrediente=F("id_ingredientes__nombre")
+                    )
+                    .values("ingrediente", "año", "mes")
+                    .annotate(total_litros=Sum(F("cantidad") * F("id_ingredientes__litrosporunidad")))
             )
+            for d in directos:
+                key = (d["ingrediente"], d["año"], d["mes"])
+                consumo_total[key] = consumo_total.get(key, 0) + d["total_litros"]
 
-            for dato in datos_directos:
-                key = (dato['ingrediente_nombre'], dato['año'], dato['mes'])
-                consumo_total[key] = consumo_total.get(key, 0) + dato['total_litros']
-
-            datos_cocktails = OrdenElementos.objects.filter(
-                escocktail=True,
-                fechaorden__range=[fecha_inicio, fecha_fin]
+            # Consumo por cócteles
+            cocktails = OrdenElementos.objects.filter(
+                escocktail=True, fechaorden__range=[fecha_inicio, fecha_fin]
             )
-
-            for cocktail in datos_cocktails:
+            for pedido in cocktails:
                 receta = CocktailIngredientes.objects.filter(
-                    id_cocktail=cocktail.id_cocktail,
-                    activo=True
+                    id_cocktail=pedido.id_cocktail, activo=True
                 )
-                for ingrediente in receta:
-                    key = (ingrediente.id_ingredientes.nombre, cocktail.fechaorden.year, cocktail.fechaorden.month)
-                    cantidad_usada = cocktail.cantidad * ingrediente.cantidad
-                    consumo_total[key] = consumo_total.get(key, 0) + cantidad_usada
+                for ingr in receta:
+                    key = (
+                        ingr.id_ingredientes.nombre,
+                        pedido.fechaorden.year,
+                        pedido.fechaorden.month
+                    )
+                    consumo_total[key] = consumo_total.get(key, 0) + (pedido.cantidad * ingr.cantidad)
 
-            ingredientes = OrdenElementos.objects.values_list("id_ingredientes__nombre", flat=True).distinct()
-            fecha_fin_datetime = pd.to_datetime(fecha_fin)
-            años = range(fecha_inicio.year, fecha_fin_datetime.year + 1)
+            # 2) Construir DataFrame “flat” con todas las combinaciones
+            ingredientes = Ingredientes.objects.values_list("nombre", flat=True).distinct()
+            fecha_fin_dt = pd.to_datetime(fecha_fin)
+            años = range(fecha_inicio.year, fecha_fin_dt.year + 1)
             meses = range(1, 13)
-
             combinaciones = []
             for año in años:
-                if año == fecha_fin_datetime.year:
-                    meses_hasta_fin = range(1, fecha_fin_datetime.month + 1)
-                    combinaciones.extend(product(ingredientes, [año], meses_hasta_fin))
+                if año == fecha_fin_dt.year:
+                    meses_hasta = range(1, fecha_fin_dt.month + 1)
                 else:
-                    combinaciones.extend(product(ingredientes, [año], meses))
+                    meses_hasta = meses
+                combinaciones.extend(product(ingredientes, [año], meses_hasta))
 
-            datos_consumo = [
+            datos = [
                 {
-                    "Ingrediente": ingrediente,
+                    "Ingrediente": ing,
                     "Año": año,
                     "Mes": mes,
-                    "Consumo Total": consumo_total.get((ingrediente, año, mes), 0)
+                    "Consumo Total": float(consumo_total.get((ing, año, mes), 0))
                 }
-                for ingrediente, año, mes in combinaciones
+                for ing, año, mes in combinaciones
             ]
+            df = pd.DataFrame(datos)
+            df.sort_values(by=["Ingrediente", "Año", "Mes"], inplace=True)
 
-            df = pd.DataFrame(datos_consumo)
+            # 3) Pivot table
+            pivot = (
+                df
+                .pivot(index=["Ingrediente", "Año"], columns="Mes", values="Consumo Total")
+                .reindex(columns=range(1, 13), fill_value=0)
+                .astype(float)
+            )
+            meses_abv = {
+                1:"Ene",  2:"Feb", 3:"Mar", 4:"Abr",
+                5:"May",  6:"Jun", 7:"Jul", 8:"Ago",
+                9:"Sep", 10:"Oct",11:"Nov",12:"Dic"
+            }
+            pivot.rename(columns=meses_abv, inplace=True)
 
-            df.sort_values(by=['Ingrediente', 'Año', 'Mes'], inplace=True)
+            # 4) Exportar a Excel con auto-width
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+                ruta = tmp.name
+                with pd.ExcelWriter(ruta, engine="openpyxl") as writer:
+                    pivot.to_excel(writer, sheet_name="Consumo Histórico")
+                    ws = writer.sheets["Consumo Histórico"]
+                    for col in ws.columns:
+                        max_len = max(len(str(cell.value)) for cell in col if cell.value is not None)
+                        ws.column_dimensions[get_column_letter(col[0].column)].width = max_len + 2
 
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp_file:
-                ruta_archivo = tmp_file.name
-                df.to_excel(ruta_archivo, index=False, engine='openpyxl')
-
-            archivo = open(ruta_archivo, "rb")
-            response = FileResponse(archivo, as_attachment=True, filename="consumo_historico.xlsx")
-            return response
+            # 5) Devolver .xlsx
+            archivo = open(ruta, "rb")
+            return FileResponse(
+                archivo,
+                as_attachment=True,
+                filename="consumo_historico.xlsx",
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
-
-
 
 class SubirConsumoHistoricoView(View):
     def post(self, request):
@@ -930,139 +956,242 @@ class SubirConsumoHistoricoView(View):
         except Exception as e:
             return JsonResponse({"error": f"Error al subir el archivo: {str(e)}"}, status=500)
 
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 @method_decorator(csrf_exempt, name="dispatch")
 class GenerarPrediccionesView(View):
     def post(self, request):
         try:
+            # --- 1. EXTRAER Y PREPARAR DATOS HISTÓRICOS ---
             fecha_actual = datetime.date.today()
-            fecha_fin = fecha_actual.replace(day=1) - datetime.timedelta(days=1)  
-
-            fecha_inicio = OrdenElementos.objects.aggregate(primera_fecha=Min("fechaorden"))["primera_fecha"]
-
+            fecha_fin = fecha_actual.replace(day=1) - datetime.timedelta(days=1)
+            fecha_inicio = OrdenElementos.objects.aggregate(
+                primera_fecha=Min("fechaorden")
+            )["primera_fecha"]
             if not fecha_inicio:
                 return JsonResponse({"error": "No hay registros en la base de datos."}, status=400)
 
             consumo_total = {}
-
-            datos_directos = (
+            # Consumos directos
+            for d in (
                 OrdenElementos.objects
-                .filter(escocktail=False, fechaorden__range=[fecha_inicio, fecha_fin])
-                .annotate(
-                    año=F('fechaorden__year'),
-                    mes=F('fechaorden__month'),
-                    ingrediente_nombre=F('id_ingredientes__nombre')
-                )
-                .values('ingrediente_nombre', 'año', 'mes')
-                .annotate(total_litros=Sum(F('cantidad') * F('id_ingredientes__litrosporunidad')))
-            )
+                    .filter(escocktail=False, fechaorden__range=[fecha_inicio, fecha_fin])
+                    .annotate(año=F("fechaorden__year"),
+                              mes=F("fechaorden__month"),
+                              ingrediente=F("id_ingredientes__nombre"))
+                    .values("ingrediente","año","mes")
+                    .annotate(total_litros=Sum(F("cantidad")*F("id_ingredientes__litrosporunidad")))
+            ):
+                key = (d["ingrediente"], d["año"], d["mes"])
+                consumo_total[key] = consumo_total.get(key,0) + float(d["total_litros"])
 
-            for dato in datos_directos:
-                key = (dato['ingrediente_nombre'], dato['año'], dato['mes'])
-                consumo_total[key] = consumo_total.get(key, 0) + dato['total_litros']
-
-            datos_cocktails = OrdenElementos.objects.filter(
-                escocktail=True,
-                fechaorden__range=[fecha_inicio, fecha_fin]
-            )
-
-            for cocktail in datos_cocktails:
-                receta = CocktailIngredientes.objects.filter(
-                    id_cocktail=cocktail.id_cocktail,
-                    activo=True
-                )
-                for ingrediente in receta:
-                    key = (ingrediente.id_ingredientes.nombre, cocktail.fechaorden.year, cocktail.fechaorden.month)
-                    cantidad_usada = cocktail.cantidad * ingrediente.cantidad
-                    consumo_total[key] = consumo_total.get(key, 0) + cantidad_usada
-
-            ingredientes = OrdenElementos.objects.values_list("id_ingredientes__nombre", flat=True).distinct()
-            fecha_fin_datetime = pd.to_datetime(fecha_fin)
-            años = range(fecha_inicio.year, fecha_fin_datetime.year + 1)
-            meses = range(1, 13)
-
-            combinaciones = []
-            for año in años:
-                if año == fecha_fin_datetime.year:
-                    meses_hasta_fin = range(1, fecha_fin_datetime.month + 1)
-                    combinaciones.extend(product(ingredientes, [año], meses_hasta_fin))
-                else:
-                    combinaciones.extend(product(ingredientes, [año], meses))
-
-            datos_consumo = [
-                {
-                    "Ingrediente": ingrediente,
-                    "Año": año,
-                    "Mes": mes,
-                    "Consumo Total": float(consumo_total.get((ingrediente, año, mes), 0))  
-                }
-                for ingrediente, año, mes in combinaciones
-            ]
-
-            df_consumo = pd.DataFrame(datos_consumo)
-            df_consumo.sort_values(by=['Ingrediente', 'Año', 'Mes'], inplace=True)
-
-            df_consumo["Consumo Total"] = df_consumo["Consumo Total"].fillna(0)  
-            df_consumo = df_consumo.dropna(subset=["Año", "Mes", "Consumo Total"])  
-
-            predicciones_totales = pd.DataFrame(
-                columns=["Ingrediente", "Fecha", "Consumo Predicho", "Límite Inferior", "Límite Superior"]
-            )
-
-            for ingrediente in df_consumo["Ingrediente"].unique():
-                datos_ingrediente = df_consumo[df_consumo["Ingrediente"] == ingrediente]
-                try:
-                    if datos_ingrediente.empty or datos_ingrediente["Consumo Total"].sum() == 0:
-                        continue
-
-                    serie = pd.Series(
-                        data=datos_ingrediente["Consumo Total"].astype(float).values, 
-                        index=pd.date_range(
-                            start=f"{int(datos_ingrediente['Año'].min())}-{int(datos_ingrediente['Mes'].min()):02d}-01",
-                            periods=len(datos_ingrediente),
-                            freq="M",
-                        ),
+            # Consumos por cóctel
+            for ped in OrdenElementos.objects.filter(
+                escocktail=True, fechaorden__range=[fecha_inicio, fecha_fin]
+            ):
+                for rec in CocktailIngredientes.objects.filter(
+                    id_cocktail=ped.id_cocktail, activo=True
+                ):
+                    key = (
+                        rec.id_ingredientes.nombre,
+                        ped.fechaorden.year,
+                        ped.fechaorden.month
                     )
+                    consumo_total[key] = consumo_total.get(key,0) + float(ped.cantidad*rec.cantidad)
 
-                    serie = serie.fillna(0) 
-                    serie_log = np.log1p(serie)
+            # Todas las combinaciones (ingrediente, año, mes)
+            ingredientes = list(Ingredientes.objects.values_list("nombre",flat=True).distinct())
+            fecha_fin_dt = pd.to_datetime(fecha_fin)
+            años = range(fecha_inicio.year, fecha_fin_dt.year+1)
+            meses = range(1,13)
+            combos = []
+            for año in años:
+                hasta = range(1, fecha_fin_dt.month+1) if año==fecha_fin_dt.year else meses
+                combos += product(ingredientes,[año],hasta)
 
-                    modelo = SARIMAX(serie_log, order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
-                    resultado = modelo.fit(disp=False)
+            datos = [
+                {"Ingrediente":ing,"Año":año,"Mes":mes,
+                 "Consumo Total": consumo_total.get((ing,año,mes),0)}
+                for ing,año,mes in combos
+            ]
+            df_hist = pd.DataFrame(datos).sort_values(["Ingrediente","Año","Mes"])
+            df_hist["Consumo Total"].fillna(0, inplace=True)
 
-                    prediccion = resultado.get_forecast(steps=12)
-                    prediccion_medias = np.expm1(prediccion.predicted_mean)
-                    intervalo_confianza = np.expm1(prediccion.conf_int())
+            # Pivot table histórico
+            pivot_hist = (
+                df_hist
+                .pivot(index=["Ingrediente","Año"],columns="Mes",values="Consumo Total")
+                .reindex(columns=range(1,13),fill_value=0)
+                .astype(float)
+            )
+            meses_abv = {1:"Ene",2:"Feb",3:"Mar",4:"Abr",
+                         5:"May",6:"Jun",7:"Jul",8:"Ago",
+                         9:"Sep",10:"Oct",11:"Nov",12:"Dic"}
+            pivot_hist.rename(columns=meses_abv, inplace=True)
 
-                    df_predicciones = pd.DataFrame({
-                        "Ingrediente": ingrediente,
-                        "Fecha": pd.date_range(start=serie.index[-1] + pd.DateOffset(months=1), periods=12, freq="M"),
-                        "Consumo Predicho": prediccion_medias.values,
-                        "Límite Inferior": intervalo_confianza.iloc[:, 0].values,
-                        "Límite Superior": intervalo_confianza.iloc[:, 1].values,
+            # --- 2. MODELADO, PRONÓSTICO Y MÉTRICAS ---
+            n_pron = 12
+            lista_preds = []
+            lista_mets  = []
+
+            for ing in ingredientes:
+                # Construir la serie histórica
+                periodos = []
+                y, m = fecha_inicio.year, fecha_inicio.month
+                while (y<fecha_fin_dt.year) or (y==fecha_fin_dt.year and m<=fecha_fin_dt.month):
+                    periodos.append((y,m))
+                    if m==12:
+                        y, m = y+1, 1
+                    else:
+                        m += 1
+
+                vec = [consumo_total.get((ing,año,mes),0) for año,mes in periodos]
+                idx = pd.date_range(
+                    start=f"{periodos[0][0]}-{periodos[0][1]:02d}-01",
+                    periods=len(vec), freq="MS"
+                )
+                serie = pd.Series(vec, index=idx)
+                serie_log = np.log1p(serie)
+
+                # Grid search (AIC + BIC)
+                best_aic, best_bic = np.inf, np.inf
+                best_order, best_season = None, None
+                best_mod = None
+                for p in range(3):
+                    for d in range(2):
+                        for q in range(3):
+                            for P in range(2):
+                                for D in range(2):
+                                    for Q in range(2):
+                                        try:
+                                            m_ = SARIMAX(
+                                                serie_log,
+                                                order=(p,d,q),
+                                                seasonal_order=(P,D,Q,12),
+                                                enforce_stationarity=False,
+                                                enforce_invertibility=False
+                                            ).fit(disp=False, maxiter=300, method="lbfgs")
+                                            if (m_.aic < best_aic) and (m_.bic < best_bic):
+                                                best_aic, best_bic = m_.aic, m_.bic
+                                                best_order = (p,d,q)
+                                                best_season = (P,D,Q,12)
+                                                best_mod = m_
+                                        except:
+                                            continue
+                if not best_mod:
+                    continue
+
+                # Pronóstico de 12 meses arrancando en el mes actual
+                fstart = pd.Timestamp(fecha_actual.year, fecha_actual.month, 1)
+                fechas = pd.date_range(start=fstart, periods=n_pron, freq="MS")
+                fc = best_mod.get_forecast(steps=n_pron)
+                yhat = np.expm1(fc.predicted_mean)
+                ci = np.expm1(fc.conf_int())
+
+                dfp = pd.DataFrame({
+                    "Ingrediente": ing,
+                    "Fecha": fechas,
+                    "Consumo Predicho": yhat.values,
+                    "Límite Inferior": ci.iloc[:,0].values,
+                    "Límite Superior": ci.iloc[:,1].values
+                })
+                lista_preds.append(dfp)
+
+                # Validación cruzada (80/20 walk‐forward)
+                s = serie_log
+                n = len(s)
+                ntr = int(n*0.8)
+                tr, te = s.iloc[:ntr], s.iloc[ntr:]
+                history, wp = list(tr), []
+                for t in range(len(te)):
+                    try:
+                        cv = SARIMAX(
+                            history,
+                            order=best_order,
+                            seasonal_order=best_season,
+                            enforce_stationarity=False,
+                            enforce_invertibility=False
+                        ).fit(disp=False, maxiter=300, method="lbfgs")
+                    except:
+                        break
+                    fcv = np.expm1(cv.get_forecast(1).predicted_mean)[0]
+                    wp.append(fcv)
+                    history.append(te.iloc[t])
+                actuals = np.expm1(te.values)
+                lista_mets.append({
+                    "Ingrediente": ing,
+                    "MAE (L)": mean_absolute_error(actuals, wp),
+                    "RMSE (L)": np.sqrt(mean_squared_error(actuals, wp)),
+                    "MAPE (%)": np.mean(np.abs((actuals - np.array(wp)) / actuals)) * 100
+                })
+
+            # DataFrames finales
+            df_pred = pd.concat(lista_preds, ignore_index=True)
+            df_pred["Año"] = df_pred["Fecha"].dt.year
+            df_pred["Mes"] = df_pred["Fecha"].dt.month
+            pivot_pred = (
+                df_pred
+                .pivot(index=["Ingrediente","Año"], columns="Mes", values="Consumo Predicho")
+                .reindex(columns=range(1,13), fill_value=0)
+                .astype(float)
+                .rename(columns=meses_abv)
+                .round(2)
+            )
+            df_mets = pd.DataFrame(lista_mets)
+
+            # --- 3. HOJA REABASTECIMIENTO (próximos 3 meses) ---
+            df_next3 = (
+                df_pred
+                .sort_values(["Ingrediente","Fecha"])
+                .groupby("Ingrediente")
+                .head(3)
+                .copy()
+            )
+            stock_df = pd.DataFrame(
+                list(Ingredientes.objects.values("nombre","cantidadactual"))
+            ).rename(columns={"nombre":"Ingrediente","cantidadactual":"Stock Actual"})
+            # convertir stock a float para no mezclar Decimal/float
+            stock_map = {row["Ingrediente"]: float(row["Stock Actual"]) for _, row in stock_df.iterrows()}
+
+            restock = []
+            for ing, grp in df_next3.groupby("Ingrediente"):
+                rem = stock_map.get(ing, 0.0)
+                for _, row in grp.iterrows():
+                    need = max(row["Consumo Predicho"] - max(rem, 0.0), 0.0)
+                    restock.append({
+                        "Ingrediente": ing,
+                        "Fecha": row["Fecha"],
+                        "Stock Inicial": stock_map.get(ing, 0.0),
+                        "Consumo Predicho": row["Consumo Predicho"],
+                        "Restock Necesario": need
                     })
-                    predicciones_totales = pd.concat([predicciones_totales, df_predicciones], ignore_index=True)
-                except Exception as e:
-                    return JsonResponse({"error": f"Error al procesar el ingrediente '{ingrediente}': {str(e)}"}, status=500)
+                    rem -= row["Consumo Predicho"]
+            df_reab = pd.DataFrame(restock)
 
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp_file:
-                ruta_reporte = tmp_file.name
-                with pd.ExcelWriter(ruta_reporte, engine="openpyxl") as writer:
-                    df_consumo.to_excel(writer, index=False, sheet_name="Consumo Histórico")
-                    predicciones_totales.to_excel(writer, index=False, sheet_name="Predicciones")
+            # --- 4. EXPORTAR TODO A UN .XLSX con 4 hojas ---
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+                path = tmp.name
+                with pd.ExcelWriter(path, engine="openpyxl") as writer:
+                    pivot_hist.to_excel(writer, sheet_name="Consumo Histórico")
+                    pivot_pred.to_excel(writer, sheet_name="Predicciones")
+                    df_mets.to_excel(writer, index=False, sheet_name="Métricas")
+                    df_reab.to_excel(writer, index=False, sheet_name="Reabastecimiento")
+                    # Auto-width en cada columna
+                    for ws in writer.sheets.values():
+                        for col in ws.columns:
+                            mx = max(len(str(c.value)) for c in col if c.value is not None)
+                            ws.column_dimensions[get_column_letter(col[0].column)].width = mx + 2
 
-            archivo = open(ruta_reporte, "rb")
-            response = FileResponse(
-                archivo,
+            f = open(path, "rb")
+            return FileResponse(
+                f,
                 as_attachment=True,
-                filename="consumos_y_predicciones.xlsx",
+                filename="consumos_predicciones_metricas_reabastecimiento.xlsx",
                 content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-            return response
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
-
 
 class GenerarStockActualView(View):
     def get(self, request):
