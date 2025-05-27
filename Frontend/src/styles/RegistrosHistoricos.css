@@ -1,0 +1,98 @@
+/* src/styles/RegistrisHistoricos.css */
+
+.hist-container {
+    min-height: 100vh; 
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Título de la página */
+.hist-container h2 {
+    flex: 0 0 auto;
+  width: 100%;
+  padding: 1rem;
+  background-color: #007bb5; 
+  color: white; 
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Tabla */
+.hist-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.hist-table th,
+.hist-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+
+}
+
+.hist-table th {
+    background-color: #007bb5; 
+    color: white;
+}
+
+.hist-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.hist-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.registros-search-bar {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 0.5rem;
+    height: 1.5rem;
+    border-radius: 3px;
+}
+
+.registros-search-select{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 0.5rem;
+    max-width: 25%;
+    height: 1.5rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+
+.registros-search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+
+.registro-back-button{
+    display: block;
+    margin: 0.5rem auto; 
+    padding: 0.5rem 1.5rem; 
+    font-size: 1rem;
+    background-color: #007bb5;
+    color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-align: center;
+    max-width: 10rem; 
+    margin-bottom: 0.5rem;
+}
